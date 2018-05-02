@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: holamundo-deployment
+  labels:
+    app: holamundo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: holamundo
+    spec:
+      containers:
+      - name: holamundo
+        image: mycluster.icp:8500/default/holamundo:1.0
+        #livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+          - name: env_var_1_name
+            value: env_var_1_value
+        #  - name: cloudant_credentials
+        #    valueFrom:
+        #      secretKeyRef:
+        #        name: cloudant-credentials
+        #        key: credentials
+        ports:
+        - containerPort: 8080

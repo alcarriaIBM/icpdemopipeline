@@ -1,0 +1,96 @@
+# List local images
+docker image ls
+
+# Create a new image based on Debian with Node.js runtime and our sample app
+docker build -t holamundo:1.0 -f holamundo.dockerfile .
+
+# Login in ICP Registry
+docker login mycluster.icp:8500
+
+# Tag local image to ICP Registry (update with your namespace and hellonode version)
+docker tag holamundo:1.0 mycluster.icp:8500/default/holamundo:1.0
+
+# Publish local image to ICP Registry (update with your namespace and hellonode version)
+docker push mycluster.icp:8500/default/holamundo:1.0
+
+# Take a look to the existing images on your web console ( menu > platform > images)
+
+# Configure Kubernetes CLI (kubectl) via web console (top-right side of your screen, configure client) or via IBM Cloud Private CLI 
+
+# Get existing workers
+kubectl get nodes
+
+# Check workers hw specs
+kubectl describe nodes
+
+# Get existing pods
+kubectl get pods
+
+# Deploy HelloNode deployment file
+kubectl create -f holamundo-deployment.yml
+
+# Get existing deployments
+kubectl get deployments
+
+# Create the accessible service via NodePort 
+kubectl create -f holamundo-service.yml
+
+# Get existing services
+kubectl get services
+
+# Access HelloNode service from browser
+http://192.168.24.100:31325/
+
+# Check pod logs (update xxxxxxxxxxx with your pod id)
+kubectl logs -f holamundo-deployment-xxxxxxxxxxx
+
+# Access the /infect endpoint (update with your IP)
+http://192.168.24.100:31325/infect
+
+# Check the logs again
+
+# Access the /kill endpoint (update with your IP)
+http://192.168.24.100:31325/kill
+
+# Check pods status and verify how pod is restarted
+kubectl get pods
+
+# Edit hellonode-deployment.yml file and change replicas from 1 to 3
+nano holamundo-deployment.yml
+
+# Update deployment specs
+kubectl apply -f holamundo-deployment.yml
+
+# Check pods status and show now there are three
+kubectl get pods
+
+# Access the /env endpoint and show how HOSTNAME value change
+http:// 192.168.24.100:31325/env
+
+# Edit hellonode-deployment.yml file and uncomment "livenessProbe" section
+nano holamundo-deployment.yml
+
+# Update deployment specs
+kubectl apply -f holamundo-deployment.yml
+
+# Access the /infect endpoint 
+http://192.168.24.100:31325/infect
+
+# Check pods status and check how the "infected" is restarted
+kubectl get pods
+
+# Create an autoscaling policy
+kubectl create -f holamundo-autoscaler.yml
+
+# Check pods status and check how number of pods has decreased (it takes some time)
+kubectl get pods
+
+# Create secret
+kubectl create -f holamundo-secret.yml
+
+# Edit hellonode-deployment.yml file and uncomment "cloudant_credentials" section
+# Update deployment specs
+kubectl apply -f holamundo-deployment.yml
+
+# Access the /env endpoint and show how cloudant_credentials value appeared
+http://192.168.24.100:31325/env
