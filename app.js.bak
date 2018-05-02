@@ -1,0 +1,57 @@
+/**
+ * 
+ */
+
+var express = require('express');
+var log4js = require('log4js');
+var http = require('http');
+var app = express();
+var logger = log4js.getLogger('HelloKube');
+var isHealthy = true;
+
+logger.info("Starting...");
+
+setInterval(function(){
+	if(isHealthy)
+	{
+		logger.info("lalala....");
+	}
+	else
+	{
+		logger.info("cough...");
+	}
+},1000);
+
+app.get("/", function(req, res, next){
+	res.send("I'm alive!!!");
+});
+
+app.get("/env", function(req, res, next){
+	res.json(process.env);
+});
+
+app.get("/health", function(req, res, next){
+	if(isHealthy)
+	{
+		res.send("GREEN");
+	}
+	else
+	{
+		res.status(500).send("RED");
+	}
+});
+
+app.get("/infect", function(req, res, next){
+	isHealthy = false;
+	res.send("I don't feel that good...");
+});
+
+app.get("/kill", function(req, res, next){
+	process.exit();
+});
+
+var port = process.env.PORT || 8080;
+
+app.listen(port, function(){
+	logger.info('HelloKube listening on port ' + port);
+});
