@@ -41,13 +41,14 @@ app.get("/cura", function(req, res, next){
 	res.send("Sano otra vez");
 });
 
+
+/**
 app.get("/kill", function(req, res, next){
   console.log("Me he muerto")
   res.send("Hasta lueguito!");
 	process.exit();
 });
-
-
+ */
 var port = process.env.PORT || 80;
 
 app.listen(port, function(){
