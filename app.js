@@ -31,12 +31,20 @@ app.get("/", function(req, res, next){
 });
 
 app.get("/tos", function(req, res, next){
-	isHealthy = false;
+	isHealthy = false
+  console.log("Infectado")
 	res.send("Comineza a toser");
 });
 app.get("/cura", function(req, res, next){
 	isHealthy = true;
+  console.log("Curado")
 	res.send("Sano otra vez");
+});
+
+app.get("/kill", function(req, res, next){
+  console.log("Me he muerto")
+  res.send("Hasta lueguito!");
+	process.exit();
 });
 
 

@@ -6,9 +6,9 @@ podTemplate(label: 'buildpod',
         configMapVolume(configMapName: 'registry-config', mountPath: '/var/run/configs/registry-config')
     ],
     containers: [
-        containerTemplate(name: 'docker', image: 'wizplaycluster.icp:8500/default/docker:latest', command: 'cat', ttyEnabled: true),
-        containerTemplate(name: 'kubectl', image: 'wizplaycluster.icp:8500/default/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
-        containerTemplate(name: 'helm', image: 'wizplaycluster.icp:8500/default/k8s-helm:latest', command: 'cat', ttyEnabled: true)
+        containerTemplate(name: 'docker', image: 'mycluster.icp:8500/default/docker:latest', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'kubectl', image: 'mycluster.icp:8500/default/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'helm', image: 'mycluster.icp:8500/default/k8s-helm:latest', command: 'cat', ttyEnabled: true)
   ]) {
 
     node('buildpod') {
@@ -20,7 +20,7 @@ podTemplate(label: 'buildpod',
                 NAMESPACE=`cat /var/run/configs/registry-config/namespace`
                 REGISTRY=`cat /var/run/configs/registry-config/registry`
 
-                docker build -t \${REGISTRY}/\${NAMESPACE}/hello-container:${env.BUILD_NUMBER} .
+                docker build -t \${REGISTRY}/\${NAMESPACE}/holamundo-container:${env.BUILD_NUMBER} .
                 """
             }
             stage('Push Docker Image to Registry') {
@@ -35,7 +35,7 @@ podTemplate(label: 'buildpod',
                 docker login -u=\${DOCKER_USER} -p=\${DOCKER_PASSWORD} \${REGISTRY}
                 set -x
 
-                docker push \${REGISTRY}/\${NAMESPACE}/hello-container:${env.BUILD_NUMBER}
+                docker push \${REGISTRY}/\${NAMESPACE}/holamundo-container:${env.BUILD_NUMBER}
                 """
             }
         }
@@ -46,7 +46,7 @@ podTemplate(label: 'buildpod',
                 set +e
                 NAMESPACE=`cat /var/run/configs/registry-config/namespace`
                 REGISTRY=`cat /var/run/configs/registry-config/registry`
-                CHARTNAME=`helm list --deployed --short hello-container`
+                CHARTNAME=`helm list --deployed --short holamundo-container`
 
                 helm list \${CHARTNAME}
 
@@ -56,8 +56,8 @@ podTemplate(label: 'buildpod',
                     exit 1
                 fi
 
-                # Update Release 
-                helm upgrade hello-container ./hellocontainer-chart/ --set image.repository=\${REGISTRY}/\${NAMESPACE}/hello-container --set image.tag=${env.BUILD_NUMBER}
+                # Update Release
+                helm upgrade holamundo-container ./holamundocontainer-chart/ --set image.repository=\${REGISTRY}/\${NAMESPACE}/holamundo-container --set image.tag=${env.BUILD_NUMBER}
                 """
             }
         }

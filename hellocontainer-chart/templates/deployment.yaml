@@ -20,7 +20,7 @@ spec:
         app: holamundo
     spec:
       containers:
-      - name: hello-app
+      - name: holamundo-app
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         #image: wizplaycluster.icp:8500/default/hello-container:latest
         # for local development against minikube registry
@@ -42,3 +42,16 @@ spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: holamundo
+
+---
+#apiVersion: autoscaling/v1
+#kind: HorizontalPodAutoscaler
+#metadata:
+#  name: holamundo-autoscaler
+#spec:
+#  scaleTargetRef:
+#    kind: Deployment
+#    name: holamundo
+#  minReplicas: 2
+#  maxReplicas: 5
+#  targetCPUUtilizationPercentage: 20

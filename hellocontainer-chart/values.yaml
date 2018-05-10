@@ -7,10 +7,10 @@ image:
   tag: latest
   pullPolicy: Always
 service:
-  name: hello-service 
+  name: holamundo-service
   type: NodePort
   externalPort: 80
-  internalPort: 8000
+  internalPort: 80
   nodeport:
     port:
 ingress:
